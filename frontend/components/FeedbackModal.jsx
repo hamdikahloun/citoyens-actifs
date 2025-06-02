@@ -12,7 +12,6 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
-import MapView, { Marker } from "react-native-maps";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import { Feedback } from "@/api/Feedback";
@@ -28,7 +27,6 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [permissionsGranted, setPermissionsGranted] = useState(false);
-  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     checkAndRequestPermissions();
@@ -178,42 +176,6 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     ]);
   }, [takePicture, pickImage]);
 
-  const handleMapLongPress = useCallback(async (event) => {
-    const { latitude, longitude } = event.nativeEvent.coordinate;
-    setLocation({
-      coords: {
-        latitude,
-        longitude,
-        accuracy: 0,
-      },
-      timestamp: Date.now(),
-    });
-
-    try {
-      const addresses = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
-
-      if (addresses.length > 0) {
-        const address = addresses[0];
-        const fullAddress = [
-          address.street,
-          address.postalCode,
-          address.city,
-          address.country,
-        ]
-          .filter(Boolean)
-          .join(", ");
-        setAddress(fullAddress);
-      }
-    } catch (error) {
-      console.error("Erreur lors de la géocodification:", error);
-    }
-
-    setShowMap(false);
-  }, []);
-
   const handleSubmit = useCallback(async () => {
     if (!title.trim()) {
       Alert.alert("Erreur", "Veuillez saisir un titre");
@@ -350,43 +312,13 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
 
           <View style={styles.locationContainer}>
             <Ionicons name="location" size={20} color="#666" />
-            <TouchableOpacity
-              style={styles.addressDisplay}
-              onPress={() => setShowMap(true)}
-            >
+            <View style={styles.addressDisplay}>
               <Text style={styles.locationText}>
                 {address || "Sélectionner un emplacement"}
               </Text>
               <Ionicons name="map" size={16} color="#666" />
-            </TouchableOpacity>
-          </View>
-
-          {showMap && (
-            <View style={styles.mapContainer}>
-              <MapView
-                style={styles.map}
-                initialRegion={{
-                  latitude: location?.coords?.latitude || 48.8566,
-                  longitude: location?.coords?.longitude || 2.3522,
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
-                }}
-                onLongPress={handleMapLongPress}
-              >
-                {location && (
-                  <Marker
-                    coordinate={{
-                      latitude: location.coords.latitude,
-                      longitude: location.coords.longitude,
-                    }}
-                  />
-                )}
-              </MapView>
-              <Text style={styles.mapInstructions}>
-                Appuyez longuement sur la carte pour sélectionner un emplacement
-              </Text>
             </View>
-          )}
+          </View>
 
           <View style={styles.buttonContainer}>
             <SecondaryButton
