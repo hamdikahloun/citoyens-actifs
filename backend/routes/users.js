@@ -6,8 +6,11 @@ const User = require('../models/users');
 const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 
+
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const verificationCodes = new Map();
+const existingUser = new Map();
+const nouveauUser = new Map();
 let existingCount = false;
 
 // Configuration email envoyeur
@@ -25,22 +28,25 @@ const generateVerificationCode = () => {
 };
 
 
-// route login
+// route login ***************************************************************************
 router.get('/:email', function (req, res) {
   const testMail = req.params.email;
   if (!EMAIL_REGEX.test(testMail)) {
     res.json({ result: false, error: 'invalid email' });
     return;
   }
-  console.log(testMail);
+  //console.log(testMail);
 
   //check user connu - si result false => front doit renvoyer vers signup
   User.findOne({ email: testMail }).then(data => {
     if (!data) {
       res.json({ result: false, error: 'unknown username' });
     }
+    existingUser.set(testMail, {
+      data
+    });
+    //console.log(existingUser.get(testMail));
   });
-
   existingCount = true;
 
   const code = generateVerificationCode();
@@ -48,6 +54,8 @@ router.get('/:email', function (req, res) {
     code,
     timestamp: Date.now(),
   });
+
+  console.log(verificationCodes.get(testMail).code);
 
   // Send email
   try {
@@ -65,34 +73,43 @@ router.get('/:email', function (req, res) {
 });
 
 
-// route pour créer un nouveau compte
+// route pour créer un nouveau compte *************************************************************
 router.post('/signup', (req, res) => {
   if (!checkBody(req.body, ['username', 'name', 'email'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
-  if (!EMAIL_REGEX.test(req.body.email)) {
+  const maimail = req.body.email;
+  if (!EMAIL_REGEX.test(maimail)) {
     res.json({ result: false, error: 'invalid email' });
     return;
   }
 
+  nouveauUser.set(maimail, {
+    username: req.body.username,
+    name: req.body.name,
+    email: maimail,
+  })
+
   // Check if the user has not already been registered
-  User.findOne({ email: req.body.email }).then(data => {
+  User.findOne({ email: maimail }).then(data => {
     if (data === null) {
 
       const code = generateVerificationCode();
-      verificationCodes.set(testMail, {
+      verificationCodes.set(maimail, {
         code,
         timestamp: Date.now(),
       });
+
+      //console.log(verificationCodes.get(testMail));
 
       // Send email
       try {
         transporter.sendMail({
           from: process.env.EMAIL_USER,
-          to: testMail,
+          to: maimail,
           subject: "Votre code de vérification - Citoyens Actifs",
-          text: `Votre code de vérification est : ${code}`,
+          text: `Votre code de vérification est : ${code} - il est valable 15 minutes`,
         });
         res.json({ message: "code envoyé à l'utilisateur" })
       } catch (error) {
@@ -108,16 +125,21 @@ router.post('/signup', (req, res) => {
 });
 
 
-//route pour vérifier le code envoyé par mail
+//route pour vérifier le code envoyé par mail **********************************************************
 router.post("/verify-code", async (req, res) => {
+  //console.log(verificationCodes.get('tristan.rousseaux@free.fr'));
+
   try {
     const { email, code } = req.body;
+
+    console.log(code);
 
     if (!email || !code) {
       return res.status(400).json({ error: "Email and code are required" });
     }
 
     const storedData = verificationCodes.get(email);
+    console.log(storedData);
 
     if (!storedData || storedData.code !== code) {
       return res.status(400).json({ error: "Invalid verification code" });
@@ -134,23 +156,27 @@ router.post("/verify-code", async (req, res) => {
 
     // connexion si compte existant ou création de compte si nouveau compte
     if (existingCount) {
+      const actualUser = existingUser.get(email).data;
+      console.log(actualUser);
       res.json({
-        token,
-        user: user
+
+        user: actualUser
           ? {
-            email: user.email,
-            name: user.name,
-            postalCode: user.postalCode,
-            cityCoords: user.cityCoords,
+            email: actualUser.email,
+            name: actualUser.name,
+            username: actualUser.username,
+            token: actualUser.token,
           }
           : null,
       });
     } else {
+      const actualUser = nouveauUser.get(email);
+      console.log(actualUser);
 
       const newUser = new User({
-        username: req.body.username,
-        name: req.body.name,
-        email: req.body.email,
+        email: actualUser.email,
+        name: actualUser.name,
+        username: actualUser.username,
         token: uid2(32),
       });
 
@@ -158,7 +184,7 @@ router.post("/verify-code", async (req, res) => {
         res.json({ result: true, token: newDoc.token });
       });
     }
-    
+
   } catch (error) {
     console.error("Error verifying code:", error);
     res.status(500).json({ error: "Failed to verify code" });
