@@ -21,7 +21,7 @@ router.get("/city-polygon", async (req, res) => {
   if (!postalCode) return res.status(400).json({ error: "postalCode required" });
   try {
     // Search for the place with polygon_geojson=1
-    const url = `https://nominatim.openstreetmap.org/search?postalcode=${postalCode}&country=France&format=json&polygon_geojson=1&limit=5`;
+    const url = `https://nominatim.openstreetmap.org/search?postalcode=${postalCode}&country=France&format=json&polygon_geojson=1&limit=5&namedetails=1&addressdetails=1&extratags=1`;
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
