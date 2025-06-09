@@ -1,12 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Email from './screens/Email';
+import Code from './screens/Code';
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Citoyens Actifs</Text>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Email">
+        <Stack.Screen name="Email" component={Email} />
+        <Stack.Screen name="Code" component={Code} />
+      </Stack.Navigator>
       <StatusBar style="auto" />
-    </View>
+    </NavigationContainer>
   );
 }
 
