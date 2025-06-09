@@ -1,7 +1,19 @@
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { useState } from 'react'; 
+import { useDispatch } from 'react-redux';
+import { addEmail } from '../reducers/user';
 
 
 export default function Email({ navigation }) {
+
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+
+  const handleAddEmail = () => {
+    dispatch(addEmail(email));
+    navigation.navigate('Code');
+  };
+
  return (
    <View style={styles.container}>
     <Text style={styles.h1} >Citoyens Actifs</Text>
@@ -9,10 +21,11 @@ export default function Email({ navigation }) {
      <TextInput
      style={styles.textInput}
      placeholder="Entrez votre email"
-     //value={texte}
-     //onChangeText={setTexte}
+     keyboardType="email-address"
+     value={email}
+     onChangeText={setEmail}
      />
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Code')}>
+      <TouchableOpacity style={styles.button} onPress={handleAddEmail}>
         <Text style={styles.buttonText}>Continuer</Text>
       </TouchableOpacity>
 

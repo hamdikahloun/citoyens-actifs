@@ -1,14 +1,16 @@
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
 
-export default function Code({ navigation }) {
+export default function InfoClient({ navigation }) {
+
+
  return (
    <View style={styles.container}>
     <Text style={styles.h1} >Citoyens Actifs</Text>
      <Text>Entrez le code reçu à l'adresse Untel</Text>
      <TextInput
      style={styles.textInput}
-     placeholder="Entrez votre email"
+     placeholder="Entrez votre email"z
      //value={texte}
      //onChangeText={setTexte}
      />

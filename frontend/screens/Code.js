@@ -1,18 +1,22 @@
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 
 export default function Code({ navigation }) {
+
+  const email = useSelector((state) => state.user);
+
  return (
    <View style={styles.container}>
     <Text style={styles.h1} >Citoyens Actifs</Text>
-     <Text>Entrez le code reçu à l'adresse Untel</Text>
+     <Text>Entrez le code reçu à l'adresse {email}</Text>
      <TextInput
      style={styles.textInput}
-     placeholder="Entrez votre email"
+     placeholder="Entrez votre code"
      //value={texte}
      //onChangeText={setTexte}
      />
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Code')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('InfoClient')}>
         <Text style={styles.buttonText}>Continuer</Text>
       </TouchableOpacity>
 
