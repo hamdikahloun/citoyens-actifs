@@ -7,10 +7,11 @@ const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 
 async function searchCity(city) {
-  const url = `https://nominatim.openstreetmap.org/search?city=${city}&country=France&format=json&polygon_geojson=1&limit=1`;
+  const url = `https://nominatim.openstreetmap.org/search?city=${city}&country=France&format=json&polygon_geojson=1&limit=1&namedetails=1`;
   const response = await fetch(url);
   const data = await response.json();
-  //console.log(data);
+  //console.log(data[0].geojson.coordinates[0]);
+  console.log(data);
   return data;
 }
 
