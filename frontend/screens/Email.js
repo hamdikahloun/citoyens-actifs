@@ -9,9 +9,28 @@ export default function Email({ navigation }) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
 
-  const handleAddEmail = () => {
+//interroger la base de donnée sur mail déjà existant, sinon enregistrer le nouveau mail  
+  const handleAddEmail = async () => {
+  if (!email) {
+    alert("Veuillez entrer une adresse email.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://<IP_DE_TON_PC>:3000/api/${email}`);
+    const data = await response.json();
+
+    if (!data.result && data.error) {
+      alert(data.error);
+      return;
+    }
+
     dispatch(addEmail(email));
     navigation.navigate('Code');
+  } catch (error) {
+    console.error(error);
+    alert("Erreur de connexion au serveur.");
+  }
   };
 
  return (
