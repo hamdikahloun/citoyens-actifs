@@ -1,9 +1,194 @@
 var express = require('express');
 var router = express.Router();
+const nodemailer = require("nodemailer");
+require('../models/connection');
+const User = require('../models/users');
+const { checkBody } = require('../modules/checkBody');
+const uid2 = require('uid2');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const verificationCodes = new Map();
+const existingUser = new Map();
+const nouveauUser = new Map();
+let existingCount = false;
+
+// Configuration email envoyeur
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
+// Generate a random 6-digit code
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+
+// route login ***************************************************************************
+router.get('/:email', function (req, res) {
+  const testMail = req.params.email;
+  if (!EMAIL_REGEX.test(testMail)) {
+    res.json({ result: false, error: 'invalid email' });
+    return;
+  }
+  //console.log(testMail);
+
+  //check user connu - si result false => front doit renvoyer vers signup
+  User.findOne({ email: testMail }).then(data => {
+    if (!data) {
+      res.json({ result: false, error: 'unknown username' });
+    }
+    existingUser.set(testMail, {
+      data
+    });
+    //console.log(existingUser.get(testMail));
+  });
+  existingCount = true;
+
+  const code = generateVerificationCode();
+  verificationCodes.set(testMail, {
+    code,
+    timestamp: Date.now(),
+  });
+
+  console.log(verificationCodes.get(testMail).code);
+
+  // Send email
+  try {
+    transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: testMail,
+      subject: "Votre code de vérification - Citoyens Actifs",
+      text: `Votre code de vérification est : ${code}`,
+    });
+    res.json({ message: "code envoyé à l'utilisateur" })
+  } catch (error) {
+    console.error("Error sending verification code:", error);
+    res.status(500).json({ error: "Failed to send verification code" });
+  }
+});
+
+
+// route pour créer un nouveau compte *************************************************************
+router.post('/signup', (req, res) => {
+  if (!checkBody(req.body, ['username', 'name', 'email'])) {
+    res.json({ result: false, error: 'Missing or empty fields' });
+    return;
+  }
+  const maimail = req.body.email;
+  if (!EMAIL_REGEX.test(maimail)) {
+    res.json({ result: false, error: 'invalid email' });
+    return;
+  }
+
+  nouveauUser.set(maimail, {
+    username: req.body.username,
+    name: req.body.name,
+    email: maimail,
+  })
+
+  // Check if the user has not already been registered
+  User.findOne({ email: maimail }).then(data => {
+    if (data === null) {
+
+      const code = generateVerificationCode();
+      verificationCodes.set(maimail, {
+        code,
+        timestamp: Date.now(),
+      });
+
+      //console.log(verificationCodes.get(testMail));
+
+      // Send email
+      try {
+        transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: maimail,
+          subject: "Votre code de vérification - Citoyens Actifs",
+          text: `Votre code de vérification est : ${code} - il est valable 15 minutes`,
+        });
+        res.json({ message: "code envoyé à l'utilisateur" })
+      } catch (error) {
+        console.error("Error sending verification code:", error);
+        res.status(500).json({ error: "Failed to send verification code" });
+      }
+
+    } else {
+      // User already exists in database
+      res.json({ result: false, error: 'User already exists' });
+    }
+  });
+});
+
+
+//route pour vérifier le code envoyé par mail **********************************************************
+router.post("/verify-code", async (req, res) => {
+  //console.log(verificationCodes.get('tristan.rousseaux@free.fr'));
+
+  try {
+    const { email, code } = req.body;
+
+    console.log(code);
+
+    if (!email || !code) {
+      return res.status(400).json({ error: "Email and code are required" });
+    }
+
+    const storedData = verificationCodes.get(email);
+    console.log(storedData);
+
+    if (!storedData || storedData.code !== code) {
+      return res.status(400).json({ error: "Invalid verification code" });
+    }
+
+    // Check if code is expired (15 minutes)
+    if (Date.now() - storedData.timestamp > 15 * 60 * 1000) {
+      verificationCodes.delete(email);
+      return res.status(400).json({ error: "Verification code expired" });
+    }
+
+    // Clear the verification code
+    verificationCodes.delete(email);
+
+    // connexion si compte existant ou création de compte si nouveau compte
+    if (existingCount) {
+      const actualUser = existingUser.get(email).data;
+      console.log(actualUser);
+      res.json({
+
+        user: actualUser
+          ? {
+            email: actualUser.email,
+            name: actualUser.name,
+            username: actualUser.username,
+            token: actualUser.token,
+          }
+          : null,
+      });
+    } else {
+      const actualUser = nouveauUser.get(email);
+      console.log(actualUser);
+
+      const newUser = new User({
+        email: actualUser.email,
+        name: actualUser.name,
+        username: actualUser.username,
+        token: uid2(32),
+      });
+
+      newUser.save().then(newDoc => {
+        res.json({ result: true, token: newDoc.token });
+      });
+    }
+
+  } catch (error) {
+    console.error("Error verifying code:", error);
+    res.status(500).json({ error: "Failed to verify code" });
+  }
 });
 
 module.exports = router;
