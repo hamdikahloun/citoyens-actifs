@@ -11,13 +11,19 @@ export default function Email({ navigation }) {
 
 //interroger la base de donnée sur mail déjà existant, sinon enregistrer le nouveau mail  
   const handleAddEmail = async () => {
+
   if (!email) {
     alert("Veuillez entrer une adresse email.");
     return;
   }
 
   try {
-    const response = await fetch(`http://<IP_DE_TON_PC>:3000/api/${email}`);
+    const response = await fetch(`http://192.168.1.25:3000/users/send-code`,
+      {method : 'POST',
+       body : JSON.stringify({email}),
+       headers: {'Content-Type': 'application/json'},
+      }
+    );
     const data = await response.json();
 
     if (!data.result && data.error) {
@@ -27,6 +33,7 @@ export default function Email({ navigation }) {
 
     dispatch(addEmail(email));
     navigation.navigate('Code');
+    
   } catch (error) {
     console.error(error);
     alert("Erreur de connexion au serveur.");
