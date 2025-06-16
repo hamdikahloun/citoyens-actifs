@@ -160,14 +160,14 @@ router.post("/verify-code", async (req, res) => {
   try {
     const { email, code } = req.body;
 
-    console.log(code);
-
+    
     if (!email || !code) {
       return res.status(400).json({ error: "Email and code are required" });
     }
-
+  
     const storedData = verificationCodes.get(email);
-    console.log(storedData);
+    console.log('code reçu ' + code);
+    console.log('code envoyé ' + storedData);
 
     if (!storedData || storedData.code !== code) {
       return res.status(400).json({ error: "Invalid verification code" });

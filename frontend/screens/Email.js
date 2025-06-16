@@ -18,7 +18,7 @@ export default function Email({ navigation }) {
   }
 
   try {
-    const response = await fetch(`http://192.168.1.25:3000/users/send-code`,
+    const response = await fetch(`http://192.168.1.60:3000/users/send-code`,
       {method : 'POST',
        body : JSON.stringify({email}),
        headers: {'Content-Type': 'application/json'},

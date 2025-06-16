@@ -12,7 +12,7 @@ export default function Code({ navigation }) {
 
   const handleVerifyCode = async () => {
     try {
-      const response = await fetch('http://192.168.1.25:3000/users/verify-code', {
+      const response = await fetch('http://192.168.1.60:3000/users/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
