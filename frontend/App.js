@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Email from './screens/Email';
 import Code from './screens/Code';
+import InfoClient from './screens/InfoClient';
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native';
 import user from './reducers/user';
 
@@ -24,6 +25,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Email">
         <Stack.Screen name="Email" component={Email} />
         <Stack.Screen name="Code" component={Code} />
+        <Stack.Screen name="InfoClient" component={InfoClient} />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>

@@ -6,7 +6,7 @@ import { Alert } from 'react-native';
 
 export default function Code({ navigation }) {
 
-  //email stocké depuis Email.js
+  //email stocké depuis Email.jss
   const email = useSelector((state) => state.user);
   const [code, setCode] = useState('');
 

@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Generate a random 6-digit code
+// Generate a random 6-digit codee
 const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -37,7 +37,8 @@ router.post("/send-code", async (req, res) => {
     }
 
     const code = generateVerificationCode();
-    verificationCodes[email] = { email, code, timestamp: Date.now() };
+    verificationCodes.set(email, { email, code, timestamp: Date.now() });
+
     /*verificationCodes.set(email, {
       code,
       timestamp: Date.now(),
@@ -114,7 +115,6 @@ router.post('/signup', (req, res) => {
     return;
   }
   const maimail = req.body.email;
-
   
   if (!EMAIL_REGEX.test(maimail)) {
 
@@ -200,13 +200,20 @@ router.post("/verify-code", async (req, res) => {
     } else {
       const actualUser = nouveauUser.get(email);
       console.log(actualUser);
-
+      /*
       const newUser = new User({
         email: actualUser.email,
         name: actualUser.name,
         username: actualUser.username,
         token: uid2(32),
-      });
+      });*/
+
+    const newUser = new User({
+    email,
+    name: '',
+    username: '',
+    token: uid2(32),
+  });
 
       newUser.save().then(newDoc => {
         res.json({ result: true, token: newDoc.token });

@@ -14,7 +14,7 @@ export default function InfoClient({ navigation }) {
      //value={texte}
      //onChangeText={setTexte}
      />
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('InfoClient')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Email')}>
         <Text style={styles.buttonText}>Continuer</Text>
       </TouchableOpacity>
 
