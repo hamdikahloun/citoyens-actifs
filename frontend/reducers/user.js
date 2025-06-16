@@ -5,9 +5,10 @@ export const userSlice = createSlice({
   initialState: '',
   reducers: {
     addEmail: (state, action) => action.payload,
+    confirmCode: (state, action) => action.payload,
     clearEmail: () => '',
   },
 });
 
-export const { addEmail, clearEmail } = userSlice.actions;
+export const { addEmail, clearEmail, confirmCode } = userSlice.actions;
 export default userSlice.reducer;

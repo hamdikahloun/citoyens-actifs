@@ -1,22 +1,51 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux' ;
+import { useState } from 'react';
+import { Alert } from 'react-native';
 
 
 export default function Code({ navigation }) {
 
+  //email stocké depuis Email.js
   const email = useSelector((state) => state.user);
+  const [code, setCode] = useState('');
+
+  const handleVerifyCode = async () => {
+    try {
+      const response = await fetch('http://192.168.1.25:3000/users/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+
+        navigation.navigate('InfoClient');
+      } else {
+        Alert.alert('Erreur', data.error || 'Code incorrect');
+      }
+    } catch (error) {
+      console.error('Erreur réseau :', error);
+      Alert.alert('Erreur', "Impossible de vérifier le code");
+    }
+  };
 
  return (
    <View style={styles.container}>
     <Text style={styles.h1} >Citoyens Actifs</Text>
      <Text>Entrez le code reçu à l'adresse {email}</Text>
+
      <TextInput
      style={styles.textInput}
      placeholder="Entrez votre code"
-     //value={texte}
-     //onChangeText={setTexte}
+     value={code}
+     onChangeText={setCode}
+     keyboardType="numeric"
      />
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('InfoClient')}>
+
+      <TouchableOpacity style={styles.button} onPress={handleVerifyCode}>
         <Text style={styles.buttonText}>Continuer</Text>
       </TouchableOpacity>
 

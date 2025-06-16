@@ -37,10 +37,12 @@ router.post("/send-code", async (req, res) => {
     }
 
     const code = generateVerificationCode();
-    verificationCodes.set(email, {
+    verificationCodes[email] = { email, code, timestamp: Date.now() };
+    /*verificationCodes.set(email, {
       code,
       timestamp: Date.now(),
     });
+    */
 
     // Send email
     await transporter.sendMail({
@@ -154,7 +156,7 @@ router.post('/signup', (req, res) => {
 //route pour vérifier le code envoyé par mail **********************************************************
 router.post("/verify-code", async (req, res) => {
   //console.log(verificationCodes.get('tristan.rousseaux@free.fr'));
-
+  console.log('📩 Contenu reçu :', req.body);
   try {
     const { email, code } = req.body;
 
