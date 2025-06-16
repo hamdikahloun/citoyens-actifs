@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
    backgroundColor: '#fff',
    alignItems: 'center',
    justifyContent: 'center',
-   gap: 25, // Ajoute automatiquement 25px d’espace entre chaque enfant. (>React Native 0.71)
+   gap: 25, // Ajoute automatiquement 25px d’espace entre chaque enfant. (>React Native 0.71))
  },
 
  textInput: {
