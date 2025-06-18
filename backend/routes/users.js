@@ -127,6 +127,18 @@ router.post('/signup', (req, res) => {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
+const newUser = new User({
+        email: req.body.email,
+        name: req.body.name,
+        postalCode: req.body.postalCode,
+        token: uid2(32),
+      });
+
+      newUser.save().then(newDoc => {
+        res.json({ result: true, token: newDoc.token });
+      });
+
+
   const maimail = req.body.email;
   
  
