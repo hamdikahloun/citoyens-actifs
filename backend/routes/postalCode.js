@@ -6,8 +6,10 @@ const User = require('../models/users');
 const { checkBody } = require('../modules/checkBody');
 const uid2 = require('uid2');
 
-async function searchCity(city) {
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=jsonv2&polygon_geojson=1&limit=1`;
+async function searchCity(city, postal) {
+  console.log(city, postal)
+  //const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=jsonv2&polygon_geojson=1&limit=1`;
+  const url = `https://nominatim.openstreetmap.org/search?city=${city}&country=France&format=json&polygon_geojson=1&limit=1`;
   const response = await fetch(url);
   const data = await response.json();
   console.log(data);
@@ -42,8 +44,8 @@ router.post("/", async (req, res) => {
 });
 
 // route pour récupérer les limites de la ville à partir de son nom **********************************
-router.get('/city/:cityname', async function (req, res) {
-  const cityName = req.params.cityname;
+router.post('/polygon', async function (req, res) {
+  const cityName = req.body.city;
 
   if (!cityName) {
     res.json({ result: false, error: 'cityname required' });
