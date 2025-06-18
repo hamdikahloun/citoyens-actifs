@@ -10,14 +10,13 @@ export default function InfoClient({ navigation }) {
      <Text>Entrez le code reçu à l'adresse Untel</Text>
      <TextInput
      style={styles.textInput}
-     placeholder="Entrez votre email"z
+     placeholder="Entrez votre email"
      //value={texte}
      //onChangeText={setTexte}
      />
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Email')}>
         <Text style={styles.buttonText}>Continuer</Text>
       </TouchableOpacity>
-
    </View>
  );
 }

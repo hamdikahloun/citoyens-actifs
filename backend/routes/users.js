@@ -61,6 +61,80 @@ router.post("/send-code", async (req, res) => {
 });
 
 
+//route pour vérifier le code envoyé par mail **********************************************************
+router.post("/verify-code", async (req, res) => {
+  //console.log(verificationCodes.get('tristan.rousseaux@free.fr'));
+  console.log('📩 Contenu reçu :', req.body);
+  try {
+    const { email, code } = req.body;
+
+    console.log(code);
+
+    if (!email || !code) {
+      return res.status(400).json({ error: "Email and code are required" });
+    }
+
+    const storedData = verificationCodes.get(email);
+    console.log(storedData);
+
+    if (!storedData || storedData.code !== code) {
+      return res.status(400).json({ error: "Invalid verification code" });
+    }
+
+    // Check if code is expired (15 minutes)
+    if (Date.now() - storedData.timestamp > 15 * 60 * 1000) {
+      verificationCodes.delete(email);
+      return res.status(400).json({ error: "Verification code expired" });
+    }
+
+    // Clear the verification code
+    verificationCodes.delete(email);
+
+    // connexion si compte existant ou création de compte si nouveau compte
+    if (existingCount) {
+      const actualUser = existingUser.get(email).data;
+      console.log(actualUser);
+      res.json({
+
+        user: actualUser
+          ? {
+            email: actualUser.email,
+            name: actualUser.name,
+            username: actualUser.username,
+            token: actualUser.token,
+          }
+          : null,
+      });
+    } else {
+      const actualUser = nouveauUser.get(email);
+      console.log(actualUser);
+      /*
+      const newUser = new User({
+        email: actualUser.email,
+        name: actualUser.name,
+        username: actualUser.username,
+        token: uid2(32),
+      });*/
+
+    const newUser = new User({
+    email,
+    name: '',
+    username: '',
+    token: uid2(32),
+  });
+
+      newUser.save().then(newDoc => {
+        res.json({ result: true, token: newDoc.token });
+      });
+    }
+
+  } catch (error) {
+    console.error("Error verifying code:", error);
+    res.status(500).json({ error: "Failed to verify code" });
+  }
+});
+
+
 // route login ***************************************************************************
 router.get('/:email', async function (req, res) {
   const testMail = req.params.email;
@@ -152,78 +226,5 @@ router.post('/signup', (req, res) => {
   // Check if the user has not already been registered
 });
 
-
-//route pour vérifier le code envoyé par mail **********************************************************
-router.post("/verify-code", async (req, res) => {
-  //console.log(verificationCodes.get('tristan.rousseaux@free.fr'));
-  console.log('📩 Contenu reçu :', req.body);
-  try {
-    const { email, code } = req.body;
-
-    console.log(code);
-
-    if (!email || !code) {
-      return res.status(400).json({ error: "Email and code are required" });
-    }
-
-    const storedData = verificationCodes.get(email);
-    console.log(storedData);
-
-    if (!storedData || storedData.code !== code) {
-      return res.status(400).json({ error: "Invalid verification code" });
-    }
-
-    // Check if code is expired (15 minutes)
-    if (Date.now() - storedData.timestamp > 15 * 60 * 1000) {
-      verificationCodes.delete(email);
-      return res.status(400).json({ error: "Verification code expired" });
-    }
-
-    // Clear the verification code
-    verificationCodes.delete(email);
-
-    // connexion si compte existant ou création de compte si nouveau compte
-    if (existingCount) {
-      const actualUser = existingUser.get(email).data;
-      console.log(actualUser);
-      res.json({
-
-        user: actualUser
-          ? {
-            email: actualUser.email,
-            name: actualUser.name,
-            username: actualUser.username,
-            token: actualUser.token,
-          }
-          : null,
-      });
-    } else {
-      const actualUser = nouveauUser.get(email);
-      console.log(actualUser);
-      /*
-      const newUser = new User({
-        email: actualUser.email,
-        name: actualUser.name,
-        username: actualUser.username,
-        token: uid2(32),
-      });*/
-
-    const newUser = new User({
-    email,
-    name: '',
-    username: '',
-    token: uid2(32),
-  });
-
-      newUser.save().then(newDoc => {
-        res.json({ result: true, token: newDoc.token });
-      });
-    }
-
-  } catch (error) {
-    console.error("Error verifying code:", error);
-    res.status(500).json({ error: "Failed to verify code" });
-  }
-});
 
 module.exports = router;
