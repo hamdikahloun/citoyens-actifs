@@ -21,9 +21,13 @@ router.get("/me", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("/", authenticateToken, async (req, res) => {
-  const { name, postalCode } = req.body;
-  const email = req.user.email;
+//router.post("/", authenticateToken, async (req, res) => {
+router.post("/", async (req, res) => {
+  console.log(">>> Reçu requête POST /users")
+  //const { name, postalCode } = req.body;
+  //const email = req.user.email;
+  const { email, name, postalCode } = req.body;
+  
   if (!email || !name || !postalCode) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -48,6 +52,7 @@ router.post("/", authenticateToken, async (req, res) => {
     );
     res.json(user);
   } catch (err) {
+    console.error("Erreur backend :", err);
     res.status(500).json({ error: "Failed to save user" });
   }
 });
