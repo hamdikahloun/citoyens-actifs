@@ -24,12 +24,14 @@ export default function FormScreen() {
     setLoading(true);
     try {
       const user = await User.create({ email, name, postalCode });
+      console.log(`info : ${user.email} ${user.name} ${user.postalCode}`)
       dispatch(setUser(user));
       navigation.reset({
         index: 0,
         routes: [{ name: "MainScreen" }],
       });
     } catch (e) {
+      console.error("Erreur dans handleSubmit :", e);
       Alert.alert("Erreur", "Une erreur est survenue.");
     } finally {
       setLoading(false);
@@ -41,7 +43,7 @@ export default function FormScreen() {
       <Text style={styles.title}>Informations Utilisateur</Text>
       <PrimaryTextInput
         placeholder="Nom"
-        value={name}
+        value={name}j
         onChangeText={setName}
         style={styles.input}
       />
