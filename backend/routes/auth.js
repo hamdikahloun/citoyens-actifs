@@ -23,6 +23,8 @@ const generateVerificationCode = () => {
 
 // Send verification code
 router.post("/send-code", async (req, res) => {
+  console.log("🔥 POST /auth/send-code appelée");
+  
   try {
     const { email } = req.body;
 

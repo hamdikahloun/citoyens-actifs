@@ -81,6 +81,9 @@ router.patch("/:id/respond", async (req, res) => {
 
 // Add a comment to feedback
 router.post("/:id/comments", authenticateToken, async (req, res) => {
+
+  console.log(`🔥 POST /feedback/${req.params.id}/comments appelée`);
+  
   try {
     const { comment } = req.body;
     if (!comment) {

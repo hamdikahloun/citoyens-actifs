@@ -5,6 +5,7 @@ const authenticateToken = require("../middleware/auth");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
+  console.log("🔥 POST /users appelée");
   res.send("respond with a resource");
 });
 
