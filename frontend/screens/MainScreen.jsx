@@ -16,6 +16,7 @@ import MyAccountFab from "@/components/MyAccountFab";
 import AddFeedbackFab from "@/components/AddFeedbackFab";
 import Search from "@/components/Search";
 
+// écran map *************************************************************************
 export default function MainScreen() {
   const dispatch = useDispatch();
   const feedbacks = useSelector((state) => state.feedback.items);
@@ -50,6 +51,7 @@ export default function MainScreen() {
     fetchPolygon();
   }, [user.postalCode, dispatch]);
 
+  // recentre la carte sur la ville enregistrée en BDD *******************************
   const handleGoToHome = async () => {
     if (user.cityCoords) {
       mapRef.current?.animateToRegion({
@@ -73,6 +75,7 @@ export default function MainScreen() {
     }
   };
 
+  // recentre la carte sur la localisation GPS avec affichage de la ville associée **
   const handleGoToCurrentLocation = async () => {
     setLoadingCurrentLocation(true);
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -109,6 +112,7 @@ export default function MainScreen() {
     setLoadingCurrentLocation(false);
   };
 
+  // cherche le code postal entré et affiche la ville associée **********************
   const handleSearchPostalCode = async () => {
     if (!postalCode) return;
     try {
@@ -136,6 +140,7 @@ export default function MainScreen() {
     }
   };
 
+  // enregistre un signalement à l'endroit sélectionné par un appui long ************
   const handleMapLongPress = (event) => {
     setLocation({
       coords: {
@@ -148,7 +153,8 @@ export default function MainScreen() {
     setFeedbackModalVisible(true);
   };
 
-  const handleMarkerPress = (id) => {
+  // affiche le signalement sur lequel on click *************************************
+  const handleMarkerPress = (id) => {    
     setSelectedFeedback(id);
   };
 
@@ -245,5 +251,6 @@ const styles = StyleSheet.create({
   },
   fab: {
     marginBottom: 16,
+    color: 'red',
   },
 });

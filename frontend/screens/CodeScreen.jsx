@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/reducers/userSlice";
 import { Auth } from "@/api/Auth";
 
+// écran validation du code reçu par mail *******************************
 export default function CodeScreen() {
   const navigation = useNavigation();
   const route = useRoute();

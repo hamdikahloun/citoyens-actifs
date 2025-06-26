@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import colors from "@/theme/colors";
 
+// bouton blanc (ex bouton guest) *****************************************
 export default function SecondaryButton({
   text = "Continuer",
   onPress,

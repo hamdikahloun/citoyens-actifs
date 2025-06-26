@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// modèle signalements pour mongoose avec clé étrangère vers collection User
 const FeedbackSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   title: { type: String },

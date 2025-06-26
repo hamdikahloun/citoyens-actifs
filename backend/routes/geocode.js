@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+// route pour rechercher un code postal sur nominatim ******************************
 router.get("/", async (req, res) => {
   const { postalCode } = req.query;
   if (!postalCode) return res.status(400).json({ error: "postalCode required" });
@@ -15,6 +16,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// route pour obtenir le contour de la ville à partir de son code postal ***********
 router.get("/city-polygon", async (req, res) => {
   const { postalCode } = req.query;
   if (!postalCode) return res.status(400).json({ error: "postalCode required" });
@@ -38,6 +40,7 @@ router.get("/city-polygon", async (req, res) => {
   }
 });
 
+// route pour chercher une adresse précise (à coder en frontend) *******************
 router.get("/address", async (req, res) => {
   try {
     const { address } = req.query;
@@ -71,6 +74,8 @@ router.get("/address", async (req, res) => {
   }
 });
 
+
+// route pour récupérer les contour de la ville à partir de sa localisation GPS ****
 router.get("/coordinates-polygon", async (req, res) => {
   try {
     const { lat, lng } = req.query;

@@ -5,6 +5,8 @@ const User = require("../models/User");
 const authenticateToken = require("../middleware/auth");
 const { upload } = require("../config/cloudinary");
 
+
+// route pour enregistrer un signalement ******************************************
 router.post("/", authenticateToken, upload.single("image"), async (req, res) => {
   try {
     const { title, description, lat, lng, postalCode } = req.body;
@@ -45,6 +47,7 @@ router.post("/", authenticateToken, upload.single("image"), async (req, res) => 
   }
 });
 
+// route pour afficher les signalements liés à un code postal *********************
 router.get("/", async (req, res) => {
   try {
     const { postalCode } = req.query;
@@ -65,6 +68,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// route pour ajouter un commentaire sur un signalement ***************************
 router.post("/:id/comments", authenticateToken, async (req, res) => {
   try {
     const { comment } = req.body;
@@ -96,6 +100,7 @@ router.post("/:id/comments", authenticateToken, async (req, res) => {
   }
 });
 
+// route pour changer le statut d'un signalement (pour admin / service public) ****
 router.patch("/:id/status", authenticateToken, async (req, res) => {
   try {
     const { status } = req.body;

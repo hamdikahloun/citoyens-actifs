@@ -3,6 +3,7 @@ import { TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import colors from "@/theme/colors";
 
+// boutons de l'écran MainScreen ************************************************
 export default function FabButton({ onPress, iconName, style, isLoading }) {
   return (
     <TouchableOpacity style={[styles.fab, style]} onPress={onPress}>

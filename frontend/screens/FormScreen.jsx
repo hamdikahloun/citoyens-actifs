@@ -7,6 +7,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { User } from "@/api/User";
 import colors from "@/theme/colors";
 
+// écran pour rentrer les infos liées au compte *******************************
 export default function FormScreen() {
   const [name, setName] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -15,16 +16,17 @@ export default function FormScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const email = route.params?.email;
-
-  const handleSubmit = async () => {
+  
+  const handleSubmit = async () => {    
+      
     if (!name || !postalCode) {
       Alert.alert("Erreur", "Veuillez remplir tous les champs.");
       return;
     }
     setLoading(true);
-    try {
+    try {   
       const user = await User.create({ email, name, postalCode });
-      dispatch(setUser(user));
+      dispatch(setUser(user));      
       navigation.reset({
         index: 0,
         routes: [{ name: "MainScreen" }],

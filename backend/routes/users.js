@@ -7,8 +7,10 @@ router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 
+// route pour connecter un utilisateur existant *************************
 router.get("/me", authenticateToken, async (req, res) => {
   try {
+    console.log(req.body);
     const user = await User.findOne({ email: req.user.email });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -19,7 +21,9 @@ router.get("/me", authenticateToken, async (req, res) => {
   }
 });
 
+// route pour enregistrer un nouvel utilisateur *************************
 router.post("/", authenticateToken, async (req, res) => {
+  console.log(req.body);
   const { name, postalCode } = req.body;
   const email = req.user.email;
   if (!email || !name || !postalCode) {

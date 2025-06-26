@@ -2,6 +2,7 @@ import React from "react";
 import { View, TextInput, Text, StyleSheet } from "react-native";
 import colors from "@/theme/colors";
 
+// champ de texte de base (ex : email) *********************************
 export default function PrimaryTextInput({
   value,
   placeholder,

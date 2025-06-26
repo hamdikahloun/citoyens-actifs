@@ -2,7 +2,7 @@ import { apiClient } from "./client";
 import { API_ENDPOINTS } from "./endpoints";
 
 export const Geocode = {
-  search: (postalCode) =>
+  search: (postalCode) => 
     apiClient.request(API_ENDPOINTS.GEOCODE.SEARCH(postalCode)),
 
   getCityPolygon: (postalCode) =>

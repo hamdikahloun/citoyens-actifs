@@ -18,6 +18,7 @@ import { Feedback } from "@/api/Feedback";
 import { addFeedback } from "@/reducers/feedbackSlice";
 import { useDispatch } from "react-redux";
 
+// composant pour ajouter un signalement ******************************************
 const FeedbackModal = ({ defaultLocation, onClose }) => {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
@@ -33,6 +34,7 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     checkAndRequestPermissions();
   }, [checkAndRequestPermissions]);
 
+  // demande des permissions d'accès **********************************************
   const checkAndRequestPermissions = useCallback(async () => {
     try {
       const { status: cameraStatus } =
@@ -76,7 +78,8 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     }
   }, [getCurrentLocation]);
 
-  const getCurrentLocation = useCallback(async () => {
+// récupération de la localisation GPS et renvoit d'une adresse *******************
+  const getCurrentLocation = useCallback(async () => {    
     try {
       let currentLocation = defaultLocation;
       if (!currentLocation) {
@@ -110,7 +113,8 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     }
   }, [defaultLocation]);
 
-  const takePicture = useCallback(async () => {
+  // accède à l'apareil photo pour prendre une image ******************************
+  const takePicture = useCallback(async () => {  
     if (!permissionsGranted) {
       await checkAndRequestPermissions();
       return;
@@ -134,7 +138,8 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     }
   }, [permissionsGranted, checkAndRequestPermissions]);
 
-  const pickImage = useCallback(async () => {
+  // choisir une photo dans la gallerie *******************************************
+  const pickImage = useCallback(async () => {    
     if (!permissionsGranted) {
       await checkAndRequestPermissions();
       return;
@@ -157,7 +162,8 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     }
   }, [permissionsGranted, checkAndRequestPermissions]);
 
-  const showImageOptions = useCallback(() => {
+  // choix pour l'ajout d'une photo ***********************************************
+  const showImageOptions = useCallback(() => {    
     Alert.alert("Ajouter une photo", "Choisissez une option", [
       {
         text: "Prendre une photo",
@@ -174,7 +180,8 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     ]);
   }, [takePicture, pickImage]);
 
-  const handleSubmit = useCallback(async () => {
+  // soumet le signalement ********************************************************
+  const handleSubmit = useCallback(async () => {    
     if (!title.trim()) {
       Alert.alert("Erreur", "Veuillez saisir un titre");
       return;
@@ -245,7 +252,8 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
     onClose();
   }, [onClose]);
 
-  const handleClose = useCallback(() => {
+  // annule le signalement ***********************************************
+  const handleClose = useCallback(() => {    
     if (feedback.trim() || image) {
       Alert.alert(
         "Modifications non enregistrées",

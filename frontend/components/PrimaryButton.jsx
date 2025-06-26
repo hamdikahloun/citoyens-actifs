@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import colors from "@/theme/colors";
 
+// bouton de base (continuer - envoyer ...) ************************
 export default function PrimaryButton({
   text = "Continuer",
   onPress,

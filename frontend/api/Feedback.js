@@ -20,10 +20,10 @@ export const Feedback = {
       headers: { "Content-Type": "application/json" },
     }),
 
- /* updateStatus: (id, status) =>
+  updateStatus: (id, status) =>
     apiClient.request(API_ENDPOINTS.FEEDBACK.UPDATE_STATUS(id), {
       method: "PATCH",
       body: JSON.stringify({ status }),
       headers: { "Content-Type": "application/json" },
-    }),*/
+    }),
 };

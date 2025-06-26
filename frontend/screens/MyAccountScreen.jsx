@@ -8,6 +8,7 @@ import { logout } from "@/reducers/userSlice";
 import { Auth } from "@/api/Auth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+// écran déconnection ****************************************************
 export default function MyAccountScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();

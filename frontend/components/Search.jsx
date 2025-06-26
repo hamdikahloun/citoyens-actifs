@@ -2,6 +2,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "@/theme/colors";
 
+// champ de texte code postal **********************************************
 export default function Search({ value, onChangeText, onSearch }) {
   return (
     <View style={styles.searchBarContainer}>

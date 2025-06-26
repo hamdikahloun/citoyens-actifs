@@ -1,6 +1,7 @@
 import FabButton from "./FabButton";
 import { useSelector } from "react-redux";
 
+// bouton Home **************************************************************
 export default function HomeFab({ style, onPress }) {
   const user = useSelector((state) => state.user);
 

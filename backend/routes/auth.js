@@ -17,10 +17,13 @@ const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+
+// route pour envoyer le code de vérification par mail **********************************
 router.post("/send-code", async (req, res) => {
+  
   try {
     const { email } = req.body;
-
+  
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
     }
@@ -33,7 +36,7 @@ router.post("/send-code", async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Votre code de vérification - Citoyens Actifs",
-      text: `Votre code de vérification est : ${code}`,
+      text: `Votre code de vérification est : ${code}, il est valable 5 minutes`,
     });
 
     res.json({ message: "Verification code sent successfully" });
@@ -43,6 +46,7 @@ router.post("/send-code", async (req, res) => {
   }
 });
 
+// route pour vérifier le code de vérification envoyé par mail **************************
 router.post("/verify-code", async (req, res) => {
   try {
     const { email, code } = req.body;

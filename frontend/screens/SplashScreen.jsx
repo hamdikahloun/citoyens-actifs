@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { User } from "@/api/User";
 import colors from "@/theme/colors";
 
+// écran de chargement => redirige vers mainscreen ou email selon validité du token ***************
 export default function SplashScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();

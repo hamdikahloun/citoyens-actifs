@@ -9,6 +9,7 @@ import { Auth } from "@/api/Auth";
 import { isValidEmail } from "@/utils/email";
 import SecondaryButton from "@/components/SecondaryButton";
 
+// écran pour rentrer son email *************************************
 export default function EmailScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
@@ -23,8 +24,9 @@ export default function EmailScreen() {
 
     setError("");
     setLoading(true);
-
+console.log(email);
     try {
+      console.log('send code');
       await Auth.sendCode(email);
       navigation.navigate("CodeScreen", { email });
     } catch (error) {

@@ -17,18 +17,20 @@ import { Feedback } from "@/api/Feedback";
 import { updateFeedback } from "@/reducers/feedbackSlice";
 import { useDispatch, useSelector } from "react-redux";
 
+// intéraction avec les signalements ***************************************
 const FeedbackDetailsModal = ({ id, onClose }) => {
   const dispatch = useDispatch();
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  //const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const feedback = useSelector((state) =>
     state.feedback.items.find((item) => item._id === id),
   );
-  //const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
 
   if (!feedback) return null;
 
+  // ajout d'un commentaire sur un signalement *****************************
   const handleSubmitComment = async () => {
     if (!comment.trim()) return;
 
@@ -48,7 +50,8 @@ const FeedbackDetailsModal = ({ id, onClose }) => {
     }
   };
 
-  /*const handleUpdateStatus = async (newStatus) => {
+  // mise à jour d statut (non actif pour le moment) ***********************
+  const handleUpdateStatus = async (newStatus) => {
     setIsUpdatingStatus(true);
     try {
       const updatedFeedback = await Feedback.updateStatus(
@@ -68,7 +71,6 @@ const FeedbackDetailsModal = ({ id, onClose }) => {
     user?.role === "admin" ||
     user?.role === "public_service" ||
     user?._id === feedback.user._id;
-*/
 
   return (
     <Modal
