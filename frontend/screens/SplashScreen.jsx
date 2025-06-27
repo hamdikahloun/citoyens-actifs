@@ -22,7 +22,7 @@ export default function SplashScreen() {
           routes: [{ name: "MainScreen" }],
         });
       } catch (e) {
-        console.error(e);
+        console.log(e);
         AsyncStorage.removeItem("userToken");
         navigation.reset({
           index: 0,

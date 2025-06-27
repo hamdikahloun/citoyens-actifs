@@ -227,7 +227,7 @@ const FeedbackModal = ({ defaultLocation, onClose }) => {
 
       resetForm();
     } catch (error) {
-      console.error("Erreur lors de l'envoi du message:", error);
+      console.log("Erreur lors de l'envoi du message:", error);
       Alert.alert("Erreur", "Impossible d'envoyer le message");
     } finally {
       setLoading(false);

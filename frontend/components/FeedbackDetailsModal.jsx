@@ -43,14 +43,14 @@ const FeedbackDetailsModal = ({ id, onClose }) => {
       dispatch(updateFeedback(updatedFeedback));
       setComment("");
     } catch (error) {
-      console.error("Error adding comment:", error);
+      console.log("Error adding comment:", error);
       Alert.alert("Erreur", "Impossible d'ajouter le commentaire");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // mise à jour d statut (non actif pour le moment) ***********************
+  // mise à jour d'un statut (non actif pour le moment) ********************
   const handleUpdateStatus = async (newStatus) => {
     setIsUpdatingStatus(true);
     try {

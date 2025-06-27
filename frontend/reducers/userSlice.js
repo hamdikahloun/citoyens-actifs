@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   email: "",
   name: "",
-  postalCode: "",
+  postalCode: "75001",
   cityCoords: null,
   role: "",
   _id: "",
