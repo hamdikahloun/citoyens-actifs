@@ -9,8 +9,7 @@ router.get("/", function (req, res, next) {
 
 // route pour connecter un utilisateur existant *************************
 router.get("/me", authenticateToken, async (req, res) => {
-  try {
-    console.log(req.body);
+  try {    
     const user = await User.findOne({ email: req.user.email });
     if (!user) {
       return res.status(404).json({ error: "User not found" });

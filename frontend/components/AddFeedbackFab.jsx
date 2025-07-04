@@ -8,5 +8,5 @@ export default function AddFeedbackFab({ style, onPress }) {
   if (!user?.email) return null;
   //if (user.role !== "user") return null;
 
-  return <FabButton style={style} onPress={onPress} iconName="plus" />;
+  return <FabButton style={style} onPress={onPress} iconName="plus"/>;
 }
